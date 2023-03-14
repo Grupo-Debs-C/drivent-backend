@@ -31,14 +31,15 @@ model Session {
 }
 
 model Event {
-  id                 Int      @id @default(autoincrement())
-  title              String   @db.VarChar(255)
-  backgroundImageUrl String   @db.VarChar(255)
-  logoImageUrl       String   @db.VarChar(255)
+  id                 Int          @id @default(autoincrement())
+  title              String       @db.VarChar(255)
+  backgroundImageUrl String       @db.VarChar(255)
+  logoImageUrl       String       @db.VarChar(255)
   startsAt           DateTime
   endsAt             DateTime
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+  Activities         Activities[]
 }
 
 model Enrollment {
@@ -91,6 +92,7 @@ model Ticket {
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
   Payment      Payment[]
+  Vacancy      Vacancy[]
 }
 
 enum TicketStatus {
@@ -137,4 +139,31 @@ model Booking {
   roomId    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Locality {
+  id         Int          @id @default(autoincrement())
+  name       String
+  Activities Activities[]
+}
+
+model Activities {
+  id           Int       @id @default(autoincrement())
+  Event        Event     @relation(fields: [eventId], references: [id])
+  eventId      Int
+  Locality     Locality  @relation(fields: [localityId], references: [id])
+  localityId   Int
+  Name         String
+  endsAt       DateTime
+  startAt      DateTime
+  vacancyLimit Int
+  Vacancy      Vacancy[]
+}
+
+model Vacancy {
+  id           Int        @id @default(autoincrement())
+  Activities   Activities @relation(fields: [activitiesId], references: [id])
+  activitiesId Int
+  Ticket       Ticket     @relation(fields: [ticketId], references: [id])
+  ticketId     Int
 }
